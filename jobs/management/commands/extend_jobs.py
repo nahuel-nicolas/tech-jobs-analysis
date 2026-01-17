@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand
 from openai import OpenAI
 
 from jobs.models import ExtendedJob
-from jobs.filters import get_jobs_to_extend
+from jobs.utils import get_jobs_to_extend
 
 
 logger = logging.getLogger(__name__)

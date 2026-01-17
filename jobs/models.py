@@ -18,7 +18,7 @@ class Job(TimeStampedModel):
     date = models.DateField(blank=True, null=True, default=None)
     description = models.TextField()
     applicants = models.CharField(max_length=255, blank=True, null=True, default=None)
-    query = models.IntegerField(blank=True, null=True, default=None)
+    query_id = models.IntegerField(blank=True, null=True, default=None)
     portal = models.CharField(
         max_length=20,
         choices=PORTAL_CHOICES,
