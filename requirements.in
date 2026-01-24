@@ -1,8 +1,5 @@
-# Django web framework
 Django>=5.2
-
-# OpenAI API client
 openai
-
-# Environment variables from .env file
 python-dotenv
+ipykernel
+pandas
