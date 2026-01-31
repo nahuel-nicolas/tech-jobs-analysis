@@ -22,6 +22,7 @@ static/
 
 # Media files
 media/
+backups/
 
 # Environment variables
 .env

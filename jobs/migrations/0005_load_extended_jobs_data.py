@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 def load_extended_jobs_data(apps, schema_editor):
-    sql_file = Path(__file__).resolve().parent.parent.parent / 'jobs_extendedjob_202601241326.sql'
+    sql_file = Path(__file__).resolve().parent.parent.parent / 'jobs_extendedjob_202601311441.sql'
     with open(sql_file, 'r') as f:
         sql = f.read()
     connection = schema_editor.connection
@@ -18,7 +18,7 @@ def reverse_load_extended_jobs_data(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('jobs', '0002_load_jobs_data'),
+        ('jobs', '0004_alter_extendedjob_bachelor_required_and_more'),
     ]
 
     operations = [
