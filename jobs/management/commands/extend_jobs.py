@@ -58,6 +58,21 @@ def get_extended_jobs(jobs, request_limit):
             medical_insurance: bool, (is medical insurance listed as a benefit?)
             hourprice: float | null, (how much do they pay per hour?)
             salary_currency: str | null, (e.g. 'usd' | 'usd,ars,cad,etc' | null)
+            job_category: str (pick one from the list below)
+                - SWE: Software Engineer, Full Stack, Frontend, Backend, Developer
+                - SSWE: Staff Engineer, Principal Engineer, Software Architect
+                - C: C-level (CTO, COO, CEO, VP, Head of, etc.)
+                - MLE: Machine Learning Engineer, Data Scientist, AI Engineer
+                - DevOps: DevOps, SRE, Infrastructure, Security, Cloud Engineer/Architect
+                - DA: Data Analyst, Business Analyst
+                - DE: Data Engineer, ETL Developer, Data Architect
+                - PM: Product/Project/Program Manager, Scrum Master
+                - EM: Engineering Manager, Director of Engineering
+                - TL: Tech Lead, Team Lead, Lead Developer
+                - UI: UI/UX Designer, Product Designer
+                - QA: QA Engineer, SDET, Test Engineer
+                - HD: Help Desk like jobs
+                - Other: Everything else
         }
         just return the json not an string with extra words like 'json'
         """
