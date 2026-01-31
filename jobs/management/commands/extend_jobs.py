@@ -16,6 +16,7 @@ class Command(BaseCommand):
     help = 'Creates ExtendedJob records for Job entries that do not have them'
 
     def handle(self, *args, **options):
+        check_openai_config()
         extend_jobs()
 
 def is_openai_config():
@@ -29,11 +30,41 @@ def check_openai_config():
     if not is_openai_config():
         raise ValueError("Error: Missing OpenAI config.")
 
-check_openai_config()
-client = OpenAI(api_key=settings.OPEN_AI_API_KEY)
-
 
 def get_extended_jobs(jobs, request_limit):
+    client = OpenAI(api_key=settings.OPEN_AI_API_KEY)
+    initial_prompt = """
+    be ready for: reading a text input, it is gonna be a job post text
+    then answer with this json structure:
+    {
+        bachelor_required: bool, (true if bachelor is required or master is prefered)
+        master_required: bool, (true if master is required or phd prefered)
+        phd_required: bool,
+        tech_stack: str | null, (e.g. 'javascript,python,react,etc')
+        min_experience_years: int, (default 0)
+        us_only: bool,
+        salary: str | null, (if no numbers, then null)
+        employment_type: str | null, (e.g. 'full-time' | 'part-time' | 'contract' | 'flexible' | null)
+        medical_insurance: bool, (is medical insurance listed as a benefit?)
+        hourprice: float | null, (how much do they pay per hour?)
+        salary_currency: str | null, (e.g. 'usd' | 'usd,ars,cad,etc' | null)
+        job_category: str (pick one from the list below)
+            - SWE: Software Engineer, Full Stack, Frontend, Backend, Developer
+            - SSWE: Staff Engineer, Principal Engineer, Software Architect
+            - C: C-level (CTO, COO, CEO, VP, Head of, etc.)
+            - MLE: Machine Learning Engineer, Data Scientist, AI Engineer
+            - DevOps: DevOps, SRE, Infrastructure, Security, Cloud Engineer/Architect
+            - DA: Data Analyst, Business Analyst
+            - DE: Data Engineer, ETL Developer, Data Architect
+            - PM: Product/Project/Program Manager, Scrum Master
+            - EM: Engineering Manager, Director of Engineering
+            - TL: Tech Lead, Team Lead, Lead Developer
+            - UI: UI/UX Designer, Product Designer
+            - QA: QA Engineer, SDET, Test Engineer
+            - HD: Help Desk like jobs
+            - Other: Everything else
+    }
+    """
     extended_jobs = []
     counter = 0
     jobs_count = len(jobs)
@@ -43,38 +74,6 @@ def get_extended_jobs(jobs, request_limit):
         if counter >= request_limit:
             print(f"Request Limit ({request_limit}) reached.")
             break
-        initial_prompt = """
-        be ready for: reading a text input, it is gonna be a job post text
-        then answer with this json structure:
-        {
-            bachelor_required: bool, (true if bachelor is required or master is prefered)
-            master_required: bool, (true if master is required or phd prefered)
-            phd_required: bool,
-            tech_stack: str | null, (e.g. 'javascript,python,react,etc')
-            min_experience_years: int, (default 0)
-            us_only: bool,
-            salary: str | null, (if no numbers, then null)
-            employment_type: str | null, (e.g. 'full-time' | 'part-time' | 'contract' | 'flexible' | null)
-            medical_insurance: bool, (is medical insurance listed as a benefit?)
-            hourprice: float | null, (how much do they pay per hour?)
-            salary_currency: str | null, (e.g. 'usd' | 'usd,ars,cad,etc' | null)
-            job_category: str (pick one from the list below)
-                - SWE: Software Engineer, Full Stack, Frontend, Backend, Developer
-                - SSWE: Staff Engineer, Principal Engineer, Software Architect
-                - C: C-level (CTO, COO, CEO, VP, Head of, etc.)
-                - MLE: Machine Learning Engineer, Data Scientist, AI Engineer
-                - DevOps: DevOps, SRE, Infrastructure, Security, Cloud Engineer/Architect
-                - DA: Data Analyst, Business Analyst
-                - DE: Data Engineer, ETL Developer, Data Architect
-                - PM: Product/Project/Program Manager, Scrum Master
-                - EM: Engineering Manager, Director of Engineering
-                - TL: Tech Lead, Team Lead, Lead Developer
-                - UI: UI/UX Designer, Product Designer
-                - QA: QA Engineer, SDET, Test Engineer
-                - HD: Help Desk like jobs
-                - Other: Everything else
-        }
-        """
         print(f"Processing job w/ id {job.portal_id} {counter}/{jobs_count}")
         
         response = client.chat.completions.create(
@@ -90,7 +89,7 @@ def get_extended_jobs(jobs, request_limit):
             try:
                 extended_job, _ = ExtendedJob.objects.update_or_create(
                     job=job,
-                    **response_data
+                    defaults=response_data
                 )
                 extended_jobs.append(extended_job)
             except Exception as e:
