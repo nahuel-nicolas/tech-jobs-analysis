@@ -3,3 +3,4 @@ openai
 python-dotenv
 ipykernel
 pandas
+category-encoders
