@@ -54,7 +54,7 @@ def get_extended_jobs(jobs, request_limit):
             min_experience_years: int, (default 0)
             us_only: bool,
             salary: str | null, (if no numbers, then null)
-            employment_type: str | null, (e.g. 'full-time' | 'part-time' | 'contract' | null)
+            employment_type: str | null, (e.g. 'full-time' | 'part-time' | 'contract' | 'flexible' | null)
             medical_insurance: bool, (is medical insurance listed as a benefit?)
             hourprice: float | null, (how much do they pay per hour?)
             salary_currency: str | null, (e.g. 'usd' | 'usd,ars,cad,etc' | null)
@@ -74,7 +74,6 @@ def get_extended_jobs(jobs, request_limit):
                 - HD: Help Desk like jobs
                 - Other: Everything else
         }
-        just return the json not an string with extra words like 'json'
         """
         print(f"Processing job w/ id {job.portal_id} {counter}/{jobs_count}")
         
@@ -83,12 +82,11 @@ def get_extended_jobs(jobs, request_limit):
             messages=[
                 {"role": "system", "content": initial_prompt},
                 {"role": "user", "content": job.description}
-            ]
+            ],
+            response_format={"type": "json_object"}
         )
         try:
-            response_data = json.loads(
-                response.choices[0].message.content.replace("json", "", 1).replace("```", "", 2).strip()
-            )
+            response_data = json.loads(response.choices[0].message.content)
             try:
                 extended_job, _ = ExtendedJob.objects.update_or_create(
                     job=job,
