@@ -1,0 +1,28 @@
+# Tech Jobs Salary Prediction
+
+Predicting tech job salaries using machine learning.
+
+## Data
+
+Job postings scraped from Stack Overflow, stored and managed via Django ORM.
+
+Raw job fields include title, company, location, description, and applicant count.
+
+## Feature Engineering with LLM
+
+An LLM was used to extract structured features from unstructured job descriptions (see `jobs/management/commands/extend_jobs.py`):
+
+- Job category (e.g. DevOps, PM, SWE)
+- Tech stack
+- Minimum experience years
+- Education requirements (bachelor/master/PhD)
+- Employment type
+- Location restrictions (US-only)
+- Salary and currency
+- Benefits (medical insurance)
+
+These extended features are stored in the `ExtendedJob` model and used as ML inputs.
+
+## Prediction
+
+XGBoost is used to predict hourly salary from the engineered features. EDA, preprocessing, training, and hyperparameter optimization are done in `predictions/main.ipynb`.
