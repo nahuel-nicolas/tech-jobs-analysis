@@ -6,3 +6,4 @@ pandas
 category-encoders
 matplotlib
 seaborn
+xgboost
