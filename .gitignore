@@ -35,6 +35,9 @@ backups/
 *.swo
 *.code-workspace
 
+# Claude
+.claude/
+
 # OS
 .DS_Store
 Thumbs.db
