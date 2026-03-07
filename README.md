@@ -26,3 +26,11 @@ These extended features are stored in the `ExtendedJob` model and used as ML inp
 ## Prediction
 
 XGBoost is used to predict hourly salary from the engineered features. EDA, preprocessing, training, and hyperparameter optimization are done in `predictions/main.ipynb`.
+
+### Results (test set)
+
+| Metric | Value |
+|--------|-------|
+| MAE    | $8.97 (12.5%) |
+| RMSE   | $14.49 (20.2%) |
+| R²     | 0.856 |
