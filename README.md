@@ -2,6 +2,15 @@
 
 Predicting tech job salaries using machine learning.
 
+## Stack
+
+| Component | Technology |
+|-----------|------------|
+| ML Model | XGBoost |
+| Feature Extraction | LLM (on real-world job posting data) |
+| Data Management | Django ORM |
+| EDA & Training | Jupyter Notebook |
+
 ## Data
 
 Job postings scraped from Stack Overflow, stored and managed via Django ORM.
